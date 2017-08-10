@@ -36,11 +36,17 @@ class Table extends Component{
 
   onAddField(evt){
     evt.preventDefault();
-    console.log("from add field", target);
+    console.log("from add field", evt.target);
   }
 
   handleChange(evt){
-    this.setState({tableName: evt.target.value});
+    if (evt.target.name === 'tableName'){
+    this.setState({[evt.target.name]: evt.target.value});
+    } else {
+      this.setState({
+        fields : Object.assign({}, this.state.fields, {[evt.target.name] : evt.target.value})
+      })
+    }
   }
 
   render(){
