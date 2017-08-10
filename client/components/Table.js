@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import axios from 'axios'
 import {withRouter, Link} from 'react-router-dom'
 import {} from '../store'
 
@@ -11,7 +12,8 @@ class Table extends Component{
       enableTable: false,
       enableField: false,
       tableName: '',
-      fields: []
+      columnName : '',
+      attributes: {}
     }
 
     this.handleTable = this.handleTable.bind(this);
@@ -34,17 +36,23 @@ class Table extends Component{
     this.setState({enableField: true, enableTable: false});
   }
 
+
+  // Make axios post with body : {2:{type: "asd", default: "zdf", allowNull: "true"}, tableName:"asdf"}
   onAddField(evt){
     evt.preventDefault();
     console.log("from add field", evt.target);
+    let columnName = this.state.columnName;
+    let body = {tableName : this.state.tableName, [columnName] : this.state.attributes};
+    console.log('sent body: ', body);
+    axios.post('/api/tables', body);
   }
 
   handleChange(evt){
-    if (evt.target.name === 'tableName'){
+    if (evt.target.name === 'tableName' || evt.target.name ==='columnName'){
     this.setState({[evt.target.name]: evt.target.value});
     } else {
       this.setState({
-        fields : Object.assign({}, this.state.fields, {[evt.target.name] : evt.target.value})
+        attributes : Object.assign({}, this.state.attributes, {[evt.target.name] : evt.target.value})
       })
     }
   }
@@ -69,8 +77,8 @@ class Table extends Component{
           ?
           <form onSubmit={this.onAddField}>
           <label>Name:<input type="text" name="columnName"  onChange= {this.handleChange} /></label>
-          <label>Type:<input type="text" name="columnType" onChange= {this.handleChange} /></label>
-          <label>default:<input type="text" name="default"  onChange= {this.handleChange} /></label>
+          <label>Type:<input type="text" name="type" onChange= {this.handleChange} /></label>
+          <label>default:<input type="text" name="defaultValue"  onChange= {this.handleChange} /></label>
           <label>allowNull:
             <input type="radio" name="allowNull" value="true"  onChange= {this.handleChange} />true
             <input type="radio" name="allowNull" value="false"  onChange= {this.handleChange} />false
