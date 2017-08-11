@@ -19,7 +19,7 @@ let x = {
   }
 };
 
-const User = db.define('user', x)
+const User = db.define('user3', x)
 
 module.exports = User
 
